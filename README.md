@@ -9,3 +9,4 @@ It manages the task such as:
 6) Collaboration and Sharing
 7) Cross-Platform Accessibility
 8) Customization and Personalization
+This Also helps in organising the tasks
