@@ -1,0 +1,56 @@
+The task creation feature within the provided Python script offers users a seamless way to input task details and integrate them into their task management workflow. Users initiate task creation by specifying a task name along with its due date and time. This input is facilitated through the create_task() function, which prompts users for this information and then returns the task name and due date/time. Once provided, the task details are stored within a list, enabling users to track multiple tasks simultaneously.
+
+The creation process is designed to be intuitive and straightforward, allowing users to quickly input task details without unnecessary complexity. Upon successful creation, users receive a confirmation message indicating that the task has been added to their list. The script fosters an iterative approach to task management, encouraging users to continuously update and monitor their tasks as needed.
+
+Furthermore, the task creation feature seamlessly integrates with the notification system, ensuring that notifications are scheduled for each newly created task. By combining task creation and notification scheduling functionalities, the script empowers users to efficiently manage their tasks while staying informed about upcoming deadlines. This holistic approach to task management facilitates productivity and organization, ultimately enabling users to prioritize their workload effectively.
+
+
+
+import datetime
+import time
+import sched
+
+def notify_task(task, due_time):
+    now = datetime.datetime.now()
+    time_diff = due_time - now
+    if time_diff.days >= 0:
+        print(f"Task '{task}' is due in {time_diff.days} days and {time_diff.seconds // 3600} hours.")
+    else:
+        print(f"Task '{task}' is overdue by {-time_diff.days} days and {(-time_diff.seconds) // 3600} hours.")
+
+def schedule_notification(task, due_time):
+    scheduler = sched.scheduler(time.time, time.sleep)
+    scheduler.enterabs(due_time.timestamp(), 1, notify_task, argument=(task, due_time))
+    scheduler.run()
+
+def create_task():
+    task_name = input("Enter the task name: ")
+    due_date_input = input("Enter the due date and time (YYYY-MM-DD HH:MM): ")
+    due_date = datetime.datetime.strptime(due_date_input, '%Y-%m-%d %H:%M')
+    return task_name, due_date
+
+def main():
+    tasks = []
+    while True:
+        print("\n1. Create Task\n2. View Tasks\n3. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            task_name, due_date = create_task()
+            tasks.append((task_name, due_date))
+            schedule_notification(task_name, due_date)
+            print("Task created successfully!")
+        elif choice == '2':
+            if not tasks:
+                print("No tasks created yet.")
+            else:
+                print("Tasks:")
+                for idx, (task_name, due_date) in enumerate(tasks, 1):
+                    print(f"{idx}. Task: {task_name}, Due: {due_date}")
+        elif choice == '3':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice!")
+
+if __name__ == "__main__":
+    main()
