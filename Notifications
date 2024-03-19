@@ -1,0 +1,25 @@
+import datetime
+import time
+import sched
+
+def notify_task(task, due_time):
+    now = datetime.datetime.now()
+    time_diff = due_time - now
+    if time_diff.days >= 0:
+        print(f"Task '{task}' is due in {time_diff.days} days and {time_diff.seconds // 3600} hours.")
+    else:
+        print(f"Task '{task}' is overdue by {-time_diff.days} days and {(-time_diff.seconds) // 3600} hours.")
+
+def schedule_notification(task, due_time):
+    scheduler = sched.scheduler(time.time, time.sleep)
+    scheduler.enterabs(due_time.timestamp(), 1, notify_task, argument=(task, due_time))
+    scheduler.run()
+
+def main():
+    task = input("Enter the task name: ")
+    due_date_input = input("Enter the due date and time (YYYY-MM-DD HH:MM): ")
+    due_date = datetime.datetime.strptime(due_date_input, '%Y-%m-%d %H:%M')
+    schedule_notification(task, due_date)
+
+if __name__ == "__main__":
+    main()
